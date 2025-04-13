@@ -30,12 +30,11 @@ function Options(){
 
 function saveToFile(max, attempts) {
   
-    if(fs.existsSync('leaderboards.json')){
-        const existingData = JSON.parse(fs.readFileSync('leaderboards.json', 'utf8'));
-        easy = existingData.easy || [];
-        medium = existingData.medium || [];
-        hard = existingData.hard || [];
-    }
+    const data = {
+        easy: easy,
+        medium: medium,
+        hard: hard
+    };
 
     if(max == 10){
         easy.push({ attempts });
@@ -45,20 +44,28 @@ function saveToFile(max, attempts) {
         hard.push({ attempts });
     }
 
-    const data = {
-        easy: easy,
-        medium: medium,
-        hard: hard
-    };
+ 
 
     fs.writeFileSync('leaderboards.json', JSON.stringify(data), 'utf-8');
 }
 function Leaderboards(){
-    
-    
-    const leaderboardData = fs.readFileSync('leaderboards.json', 'utf8');
-    console.log("Wyniki i poziomy trudności:");
-    console.log(JSON.parse(leaderboardData));
+    if (fs.existsSync('leaderboards.json')) {
+        const existingData = JSON.parse(fs.readFileSync('leaderboards.json', 'utf8'));
+        easy = existingData.easy || [];
+        medium = existingData.medium || [];
+        hard = existingData.hard || [];
+    } else {
+        console.log("Brak zapisanych wyników.");
+        return;
+    }
+
+    console.log("=== Leaderboard ===");
+    console.log("Łatwy:");
+    easy.forEach((entry, index) => console.log(`${index + 1}. Próby: ${entry.attempts}`));
+    console.log("Średni:");
+    medium.forEach((entry, index) => console.log(`${index + 1}. Próby: ${entry.attempts}`));
+    console.log("Trudny:");
+    hard.forEach((entry, index) => console.log(`${index + 1}. Próby: ${entry.attempts}`));
 }
 function Level(){
 while(true){
