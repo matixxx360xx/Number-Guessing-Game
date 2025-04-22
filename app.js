@@ -29,26 +29,26 @@ function Options(){
 
 
 function saveToFile(max, attempts) {
-  
     const data = {
-        easy: easy,
-        medium: medium,
-        hard: hard
+        easy,
+        medium,
+        hard
     };
 
-    if(max == 10){
-        easy.push({ attempts });
-    }else if(max == 50){
-        medium.push({ attempts });
-    }else if(max == 100){
-        hard.push({ attempts });
-    }
+    
 
- 
+    if (max == 10) {
+        data.easy.push({ attempts });
+    } else if (max == 50) {
+        data.medium.push({ attempts });
+    } else if (max == 100) {
+        data.hard.push({ attempts });
+    }
 
     fs.writeFileSync('leaderboards.json', JSON.stringify(data), 'utf-8');
 }
-function Leaderboards(){
+
+function loadFromFile() {
     if (fs.existsSync('leaderboards.json')) {
         const existingData = JSON.parse(fs.readFileSync('leaderboards.json', 'utf8'));
         easy = existingData.easy || [];
@@ -58,7 +58,8 @@ function Leaderboards(){
         console.log("Brak zapisanych wyników.");
         return;
     }
-
+}
+function Leaderboards(){
     console.log("=== Leaderboard ===");
     console.log("Łatwy:");
     easy.forEach((entry, index) => console.log(`${index + 1}. Próby: ${entry.attempts}`));
@@ -69,8 +70,8 @@ function Leaderboards(){
 }
 function Level(){
 while(true){
-    console.log("Witaj w grze zgadnij liczbe!\n Wybierz poziom trudności:\n1. Łatwy (1-10)\n2. Średni (1-50)\n3. Trudny (1-100)");
-    const level = parseInt(prompt("Wybierz poziom trudności (1-3): "));
+    console.log("Witaj w grze zgadnij liczbe!\n Wybierz poziom trudności:\n1. Łatwy (1-10)\n2. Średni (1-50)\n3. Trudny (1-100)\n4. Opcje");
+    const level = parseInt(prompt("Wybierz poziom trudności (1-3) albo 4 jak chcesz wejsc w opcje: "));
 
 switch(level){
     case 1:
@@ -81,6 +82,9 @@ switch(level){
         break;
     case 3:
         playGame(100);
+        break;
+    case 4:
+        Options();
         break;
     default:
         console.log("Niepoprawny wybór. Wybierz 1, 2 lub 3.");
@@ -94,15 +98,21 @@ function playGame(max){
     let attempts = 0;
     let number;
     while(randomNumber !== number){
-        number = parseInt(prompt("Wybierz liczbe: "));
+        number = parseInt(prompt("Wybierz liczbę: "));
+        if (isNaN(number)) {
+            console.log("Niepoprawny wybór. Proszę wpisać liczbę.");
+            continue;
+        }
         attempts++;
         if(number < randomNumber){
             console.log("Za mało!");
         } else if(number > randomNumber){
             console.log("Za dużo!");
         } else {
+          
             console.log(`Brawo! Zgadłeś liczbę ${randomNumber} w ${attempts} próbach!`);
             saveToFile(max, attempts);
+            attempts = 0;
             if(!playAgain()) {
                 console.log("Dziękujemy za grę!");
                 process.exit(0);
@@ -124,4 +134,5 @@ function playAgain() {
         }
     }
 }
+loadFromFile();
 Options();
