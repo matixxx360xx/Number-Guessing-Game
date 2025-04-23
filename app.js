@@ -29,21 +29,21 @@ function Options(){
 
 
 function saveToFile(max, attempts) {
+    
+
+    if (max == 10) {
+        easy.push({ attempts });
+    } else if (max == 50) {
+        medium.push({ attempts });
+    } else if (max == 100) {
+        hard.push({ attempts });
+    }
+
     const data = {
         easy,
         medium,
         hard
     };
-
-    
-
-    if (max == 10) {
-        data.easy.push({ attempts });
-    } else if (max == 50) {
-        data.medium.push({ attempts });
-    } else if (max == 100) {
-        data.hard.push({ attempts });
-    }
 
     fs.writeFileSync('leaderboards.json', JSON.stringify(data), 'utf-8');
 }
@@ -62,11 +62,11 @@ function loadFromFile() {
 function Leaderboards(){
     console.log("=== Leaderboard ===");
     console.log("Łatwy:");
-    easy.forEach((entry, index) => console.log(`${index + 1}. Próby: ${entry.attempts}`));
+    easy.sort((a, b) => a.attempts - b.attempts).forEach((entry, index) => console.log(`${index + 1}. Próby: ${entry.attempts}`));
     console.log("Średni:");
-    medium.forEach((entry, index) => console.log(`${index + 1}. Próby: ${entry.attempts}`));
+    medium.sort((a, b) => a.attempts - b.attempts).forEach((entry, index) => console.log(`${index + 1}. Próby: ${entry.attempts}`));
     console.log("Trudny:");
-    hard.forEach((entry, index) => console.log(`${index + 1}. Próby: ${entry.attempts}`));
+    hard.sort((a, b) => a.attempts - b.attempts).forEach((entry, index) => console.log(`${index + 1}. Próby: ${entry.attempts}`));
 }
 function Level(){
 while(true){
@@ -84,8 +84,7 @@ switch(level){
         playGame(100);
         break;
     case 4:
-        Options();
-        break;
+        return;
     default:
         console.log("Niepoprawny wybór. Wybierz 1, 2 lub 3.");
         continue;
@@ -114,8 +113,7 @@ function playGame(max){
             saveToFile(max, attempts);
             attempts = 0;
             if(!playAgain()) {
-                console.log("Dziękujemy za grę!");
-                process.exit(0);
+                Options();
             }
         }
     }
