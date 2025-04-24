@@ -7,7 +7,7 @@ let hard = [];
 
 function Options(){
     while(true){
-    console.log("Wybierz opcje:\n1. Gra w zgadnij liczbe\n2. Wyniki \n3. Wyjscie ");
+    console.log("Wybierz opcje:\n1. Gra w zgadnij liczbe\n2. Wyniki \n3. Wyjście ");
     const option = parseInt(prompt("Wybierz opcje od 1-3: "));
     switch(option){
         case 1:
@@ -31,13 +31,13 @@ function Options(){
 function saveToFile(max, attempts) {
     
 
-    if (max == 10) {
-        easy.push({ attempts });
-    } else if (max == 50) {
-        medium.push({ attempts });
-    } else if (max == 100) {
-        hard.push({ attempts });
-    }
+    const levelsMap = {
+        10: easy,
+        50: medium,
+        100: hard
+    };
+
+    levelsMap[max].push({ attempts });
 
     const data = {
         easy,
@@ -49,12 +49,17 @@ function saveToFile(max, attempts) {
 }
 
 function loadFromFile() {
-    if (fs.existsSync('leaderboards.json')) {
-        const existingData = JSON.parse(fs.readFileSync('leaderboards.json', 'utf8'));
-        easy = existingData.easy || [];
-        medium = existingData.medium || [];
-        hard = existingData.hard || [];
-    } else {
+    if (fs.existsSync('leaderboards.json')){
+        try{
+            const existingData = JSON.parse(fs.readFileSync('leaderboards.json', 'utf8'));
+            easy = existingData.easy || [];
+            medium = existingData.medium || [];
+            hard = existingData.hard || [];
+        }catch(error){
+            console.log("Błąd podczas wczytywania wyników: plik może być uszkodzony.");
+            console.error(error.message);
+        }
+    }else{
         console.log("Brak zapisanych wyników.");
         return;
     }
