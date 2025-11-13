@@ -29,7 +29,7 @@ Prosta konsolowa gra w Node.js, w której użytkownik próbuje zgadnąć wylosow
 
 1. Sklonuj repozytorium lub pobierz pliki  
    ```bash
-   git clone https://github.com/twoj-login/number-guessing-game.git
+   git clone https://github.com/matixxx360xx/Number-Guessing-Game.git
    cd number-guessing-game
    npm install prompt-sync
    node index.js
